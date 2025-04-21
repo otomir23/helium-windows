@@ -1,12 +1,8 @@
-# ungoogled-chromium-windows
+# helium-windows
 
-Windows packaging for [ungoogled-chromium](//github.com/Eloston/ungoogled-chromium).
+Windows packaging for [helium-chromium](//github.com/imputnet/helium-chromium).
 
-## Downloads
-
-[Download binaries from the Contributor Binaries website](//ungoogled-software.github.io/ungoogled-chromium-binaries/).
-
-Or install using `winget install --id=eloston.ungoogled-chromium -e`.
+Unofficial & unaffiliated with imput. Based on [ungoogled-chromium-windows](//github.com/ungoogled-software/ungoogled-chromium-windows).
 
 **Source Code**: It is recommended to use a tag via `git checkout` (see building instructions below). You may also use `master`, but it is for development and may not be stable.
 
@@ -46,7 +42,7 @@ NOTE: The default configuration will build 64-bit binaries for maximum security 
 			* Ensure that your Python directory either has a copy of Python named "python3.exe" or a symlink linking to the Python executable.
 		* The `httplib2` module. This can be installed using `pip install`.
     * Make sure to lift the `MAX_PATH` length restriction, either by clicking the button at the end of the Python installer or by [following these instructions](https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation?tabs=registry#:~:text=Enable,Later).
-    * Git (to fetch all required ungoogled-chromium scripts)
+    * Git (to fetch all required helium-chromium scripts)
         * During setup, make sure "Git from the command line and also from 3rd-party software" is selected. This is usually the recommended option.
 
 ### Building
@@ -54,8 +50,8 @@ NOTE: The default configuration will build 64-bit binaries for maximum security 
 Run in `Developer Command Prompt for VS` (as administrator):
 
 ```cmd
-git clone --recurse-submodules https://github.com/ungoogled-software/ungoogled-chromium-windows.git
-cd ungoogled-chromium-windows
+git clone --recurse-submodules https://github.com/otomir23/helium-windows.git
+cd helium-windows
 # Replace TAG_OR_BRANCH_HERE with a tag or branch name
 git checkout --recurse-submodules TAG_OR_BRANCH_HERE
 python3 build.py
@@ -88,28 +84,28 @@ ln -s /usr/bin/vim /usr/bin/vi
 
 1. Start `Developer Command Prompt for VS` and `MSYS2 MSYS` shell and navigate to source folder
 	1. `Developer Command Prompt for VS`
-		* `cd c:\path\to\repo\ungoogled-chromium-windows`
+		* `cd c:\path\to\repo\helium-windows`
 	1. `MSYS2 MSYS`
-		* `cd /path/to/repo/ungoogled-chromium-windows`
+		* `cd /path/to/repo/helium-windows`
 		* You can use Git Bash to determine the path to this repo
 		* Or, you can find it yourself via `/<drive letter>/<path with forward slashes>`
 1. Retrieve downloads
 	**`Developer Command Prompt for VS`**
 	* `mkdir "build\download_cache"`
-	* `python3 ungoogled-chromium\utils\downloads.py retrieve -i downloads.ini -c build\download_cache`
+	* `python3 helium-chromium\utils\downloads.py retrieve -i downloads.ini -c build\download_cache`
 1. Clone sources
 	**`Developer Command Prompt for VS`**
-	* `python3 ungoogled-chromium\utils\clone.py -o build\src`
+	* `python3 helium-chromium\utils\clone.py -o build\src`
 1. Check for rust version change (see below)
 1. Update pruning list
 	**`Developer Command Prompt for VS`**
-	* `python3 ungoogled-chromium\devutils\update_lists.py -t build\src --domain-regex ungoogled-chromium\domain_regex.list`
+	* `python3 helium-chromium\devutils\update_lists.py -t build\src --domain-regex helium-chromium\domain_regex.list`
 1. Unpack downloads
 	**`Developer Command Prompt for VS`**
-	* `python3 ungoogled-chromium\utils\downloads.py unpack -i downloads.ini -c build\download_cache build\src`
-1. Apply ungoogled-chromium patches
+	* `python3 helium-chromium\utils\downloads.py unpack -i downloads.ini -c build\download_cache build\src`
+1. Apply helium-chromium patches
 	**`Developer Command Prompt for VS`**
-	* `python3 ungoogled-chromium\utils\patches.py apply --patch-bin build\src\third_party\git\usr\bin\patch.exe build\src ungoogled-chromium\patches`
+	* `python3 helium-chromium\utils\patches.py apply --patch-bin build\src\third_party\git\usr\bin\patch.exe build\src helium-chromium\patches`
 1. Update windows patches
 	**`MSYS2 MSYS`**
 	1. Setup shell to update patches
@@ -118,7 +114,7 @@ ln -s /usr/bin/vim /usr/bin/vi
 		* `cd build/src`
 	1. Fix line breaks of files to patch
 		* `grep -r ../../patches/ -e "^+++" | awk '{print substr($2,3)}' | xargs dos2unix`
-	1. Use quilt to refresh patches. See ungoogled-chromium's [docs/developing.md](https://github.com/Eloston/ungoogled-chromium/blob/master/docs/developing.md#updating-patches) section "Updating patches" for more details
+	1. Use quilt to refresh patches. See helium-chromium's [docs/developing.md](https://github.com/imputnet/helium-chromium/blob/master/docs/developing.md#updating-patches) section "Updating patches" for more details
 	1. Go back to repo root
 		* `cd ../..`
 	1. Sanity checking for consistency in series file
@@ -140,14 +136,14 @@ ln -s /usr/bin/vim /usr/bin/vi
 1. Check the [Git GitHub](https://github.com/git-for-windows/git/releases/) for the latest version of Git.
 	1. Get the SHA-256 checksum for `PortableGit-<version>-64-bit.7z.exe`.
 1. Check for commit hash changes of `src` submodule in `third_party/microsoft_dxheaders` (e.g. using GitHub `https://github.com/chromium/chromium/tree/<version>/third_party/microsoft_dxheaders`).
-	1. Replace `version` with the Chromium version in `ungoogled-chromium/chromium_version.txt`.
+	1. Replace `version` with the Chromium version in `helium-chromium/chromium_version.txt`.
 1. Check the [NodeJS website](https://nodejs.org/en/download) for the latest **LTS** version of NodeJS.
 	1. Download the "Standalone Binary" version.
 	1. Get the SHA-512 checksum using `sha512sum` in **`MSYS2 MSYS`**.
 1. Check for version changes of windows rust crate (`third_party/rust/windows_x86_64_msvc/`).
 	1. Download rust crate zip file.
 	1. Get the SHA-512 checksum using `sha512sum` in **`MSYS2 MSYS`**.
-	1. Update `patches/ungoogled-chromium/windows/windows-fix-building-with-rust.patch` accordingly.
+	1. Update `patches/helium-chromium/windows/windows-fix-building-with-rust.patch` accordingly.
 
 ### Update rust
 1. Check `RUST_REVISION` constant in file `tools/rust/update_rust.py` in build root.
@@ -161,7 +157,7 @@ ln -s /usr/bin/vim /usr/bin/vi
 	1. Get the SHA-512 checksum using `sha512sum` in **`MSYS2 MSYS`**.
 	1. Extract archive
 	1. Execute `rustc\bin\rustc.exe -V` to get rust version string
-	1. Adapt `patches\ungoogled-chromium\windows\windows-fix-building-with-rust.patch` accordingly
+	1. Adapt `patches\helium-chromium\windows\windows-fix-building-with-rust.patch` accordingly
 1. Download nightly rust build from: `https://static.rust-lang.org/dist/<build-date>/rust-nightly-i686-pc-windows-msvc.tar.gz`
 	1. Replace `build-date` with the obtained value
 	1. Get the SHA-512 checksum using `sha512sum` in **`MSYS2 MSYS`**.

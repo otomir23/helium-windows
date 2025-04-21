@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2019 The ungoogled-chromium Authors. All rights reserved.
+# Copyright (c) 2019 The helium-chromium Authors. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 """
-ungoogled-chromium build script for Microsoft Windows
+helium-chromium build script for Microsoft Windows
 """
 
 import sys
@@ -18,7 +18,7 @@ import subprocess
 import ctypes
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent / 'ungoogled-chromium' / 'utils'))
+sys.path.insert(0, str(Path(__file__).resolve().parent / 'helium-chromium' / 'utils'))
 import downloads
 import domain_substitution
 import prune_binaries
@@ -161,7 +161,7 @@ def main():
         if args.tarball:
             # Download chromium tarball
             get_logger().info('Downloading chromium tarball...')
-            download_info = downloads.DownloadInfo([_ROOT_DIR / 'ungoogled-chromium' / 'downloads.ini'])
+            download_info = downloads.DownloadInfo([_ROOT_DIR / 'helium-chromium' / 'downloads.ini'])
             downloads.retrieve_downloads(download_info, downloads_cache, None, True, args.disable_ssl_verification)
             try:
                 downloads.check_downloads(download_info, downloads_cache, None)
@@ -174,7 +174,25 @@ def main():
             downloads.unpack_downloads(download_info, downloads_cache, None, source_tree, extractors)
         else:
             # Clone sources
-            subprocess.run([sys.executable, str(Path('ungoogled-chromium', 'utils', 'clone.py')), '-o', 'build\\src', '-p', 'win32' if args.x86 else 'win-arm64' if args.arm else 'win64'], check=True)
+            subprocess.run([sys.executable, str(Path('helium-chromium', 'utils', 'clone.py')), '-o', 'build\\src', '-p', 'win32' if args.x86 else 'win-arm64' if args.arm else 'win64'], check=True)
+
+        get_logger().info('Downloading extras tarball...')
+        download_info_extra = downloads.DownloadInfo([_ROOT_DIR / 'helium-chromium' / 'extras.ini'])
+
+        # FIXME: Overriding onboarding download source for windows support
+        download_info_extra._data['onboarding']['version'] = "202504211825"
+        download_info_extra._data['onboarding']['url'] = "https://github.com/otomir23/helium-onboarding-win/releases/download/%(version)s/helium-onboarding-%(version)s.tar.gz"
+        download_info_extra._data['onboarding']['sha256'] = "2b7d6be0da0082fc9557a685351f594937ad7d10088d0aa5d6e096d02e57ba53"
+        download_info_extra._data['onboarding']['download_filename'] = "onboarding-page-%(version)s.tar.gz"
+
+        downloads.retrieve_downloads(download_info_extra, downloads_cache, None, True, args.disable_ssl_verification)
+        try:
+            downloads.check_downloads(download_info_extra, downloads_cache, None)
+        except downloads.HashMismatchError as exc:
+            get_logger().error('File checksum does not match: %s', exc)
+            exit(1)
+        get_logger().info('Unpacking extras tarball...')
+        downloads.unpack_downloads(download_info_extra, downloads_cache, None, source_tree, extractors)
 
         # Retrieve windows downloads
         get_logger().info('Downloading required files...')
@@ -187,7 +205,7 @@ def main():
             exit(1)
 
         # Prune binaries
-        pruning_list = (_ROOT_DIR / 'ungoogled-chromium' / 'pruning.list') if args.tarball else (_ROOT_DIR  / 'pruning.list')
+        pruning_list = (_ROOT_DIR / 'helium-chromium' / 'pruning.list') if args.tarball else (_ROOT_DIR  / 'pruning.list')
         unremovable_files = prune_binaries.prune_files(
             source_tree,
             pruning_list.read_text(encoding=ENCODING).splitlines()
@@ -209,9 +227,15 @@ def main():
         downloads.unpack_downloads(download_info_win, downloads_cache, None, source_tree, extractors)
 
         # Apply patches
-        # First, ungoogled-chromium-patches
+        # First, helium-chromium-patches
+        # FIXME: Disabling patches that are unsupported on Windows
+        unsupported_patches = [
+            _ROOT_DIR / 'helium-chromium' / 'patches' / 'helium' / 'scan-chrome-native-messaging-hosts.patch'
+        ]
+        patch_gen = patches.generate_patches_from_series(_ROOT_DIR / 'helium-chromium' / 'patches', resolve=True)
+        patch_list = (patch for patch in patch_gen if patch not in unsupported_patches)
         patches.apply_patches(
-            patches.generate_patches_from_series(_ROOT_DIR / 'ungoogled-chromium' / 'patches', resolve=True),
+            patch_list,
             source_tree,
             patch_bin_path=(source_tree / _PATCH_BIN_RELPATH)
         )
@@ -223,9 +247,9 @@ def main():
         )
 
         # Substitute domains
-        domain_substitution_list = (_ROOT_DIR / 'ungoogled-chromium' / 'domain_substitution.list') if args.tarball else (_ROOT_DIR  / 'domain_substitution.list')
+        domain_substitution_list = (_ROOT_DIR / 'helium-chromium' / 'domain_substitution.list') if args.tarball else (_ROOT_DIR  / 'domain_substitution.list')
         domain_substitution.apply_substitution(
-            _ROOT_DIR / 'ungoogled-chromium' / 'domain_regex.list',
+            _ROOT_DIR / 'helium-chromium' / 'domain_regex.list',
             domain_substitution_list,
             source_tree,
             None
@@ -270,7 +294,7 @@ def main():
     if not args.ci or not (source_tree / 'out/Default').exists():
         # Output args.gn
         (source_tree / 'out/Default').mkdir(parents=True)
-        gn_flags = (_ROOT_DIR / 'ungoogled-chromium' / 'flags.gn').read_text(encoding=ENCODING)
+        gn_flags = (_ROOT_DIR / 'helium-chromium' / 'flags.gn').read_text(encoding=ENCODING)
         gn_flags += '\n'
         windows_flags = (_ROOT_DIR / 'flags.windows.gn').read_text(encoding=ENCODING)
         if args.x86:
