@@ -11,6 +11,9 @@ const crypto = require('crypto');
 const { https } = require('follow-redirects');
 
 async function run() {
+    // TODO: Setup WinGet when ready for publishing
+    throw new Error("Not implemented for Helium");
+
     const token = core.getInput('token', {
         required: true,
         trimWhitespace: true
