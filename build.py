@@ -8,6 +8,7 @@
 helium-chromium build script for Microsoft Windows
 """
 
+import asyncio
 import sys
 import time
 import argparse
@@ -21,6 +22,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent / 'helium-chromium' / 'utils'))
 import downloads
 import domain_substitution
+import name_substitution
 import prune_binaries
 import patches
 from _common import ENCODING, USE_REGISTRY, ExtractorEnum, get_logger
@@ -254,6 +256,12 @@ def main():
             source_tree,
             None
         )
+
+        # Substitute names
+        asyncio.run(name_substitution.do_substitution(
+            source_tree,
+            None,
+        ))
 
     # Check if rust-toolchain folder has been populated
     HOST_CPU_IS_64BIT = sys.maxsize > 2**32
