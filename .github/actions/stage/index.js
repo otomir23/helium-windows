@@ -33,7 +33,7 @@ async function run() {
         args.push('--x86')
     if (arm)
         args.push('--arm')
-    await exec.exec('python', ['-m', 'pip', 'install', 'httplib2'], {
+    await exec.exec('python', ['-m', 'pip', 'install', 'httplib2', 'Pillow'], {
         cwd: 'C:\\helium-windows',
         ignoreReturnCode: true
     });

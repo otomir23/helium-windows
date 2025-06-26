@@ -1,0 +1,6 @@
+generated/app.ico chrome/app/theme/chromium/win/chromium.ico
+generated/document.ico chrome/app/theme/chromium/win/chromium_doc.ico
+generated/document.ico chrome/app/theme/chromium/win/chromium_pdf.ico
+
+generated/icon.png chrome/app/theme/chromium/win/tiles/Logo.png
+generated/icon_small.png chrome/app/theme/chromium/win/tiles/SmallLogo.png
