@@ -227,14 +227,8 @@ def main():
 
         # Apply patches
         # First, helium-chromium-patches
-        # FIXME: Disabling patches that are unsupported on Windows
-        unsupported_patches = [
-            _ROOT_DIR / 'helium-chromium' / 'patches' / 'helium' / 'core' / 'scan-chrome-native-messaging-hosts.patch'
-        ]
-        patch_gen = patches.generate_patches_from_series(_ROOT_DIR / 'helium-chromium' / 'patches', resolve=True)
-        patch_list = (patch for patch in patch_gen if patch not in unsupported_patches)
         patches.apply_patches(
-            patch_list,
+            patches.generate_patches_from_series(_ROOT_DIR / 'helium-chromium' / 'patches', resolve=True),
             source_tree,
             patch_bin_path=(source_tree / _PATCH_BIN_RELPATH)
         )
