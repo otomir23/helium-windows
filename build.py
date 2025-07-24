@@ -184,12 +184,6 @@ def main():
         get_logger().info('Downloading extras tarball...')
         download_info_extra = downloads.DownloadInfo([_ROOT_DIR / 'helium-chromium' / 'extras.ini'])
 
-        # FIXME: Overriding onboarding download source for windows support
-        download_info_extra._data['onboarding']['version'] = "202506231726"
-        download_info_extra._data['onboarding']['url'] = "https://github.com/otomir23/helium-onboarding-win/releases/download/%(version)s/helium-onboarding-%(version)s.tar.gz"
-        download_info_extra._data['onboarding']['sha256'] = "33e8582c43d2a329744f9975870fa0c45e4ccb70d3e728b1714b93044d13a5c7"
-        download_info_extra._data['onboarding']['download_filename'] = "onboarding-page-%(version)s.tar.gz"
-
         downloads.retrieve_downloads(download_info_extra, downloads_cache, None, True, args.disable_ssl_verification)
         try:
             downloads.check_downloads(download_info_extra, downloads_cache, None)
