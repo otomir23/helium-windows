@@ -4,6 +4,12 @@ Windows packaging for [helium-chromium](//github.com/imputnet/helium-chromium).
 
 Unofficial & unaffiliated with imput. Based on [ungoogled-chromium-windows](//github.com/ungoogled-software/ungoogled-chromium-windows).
 
+## Downloads
+
+[Download binaries from GitHub Releases](//github.com/otomir23/helium-windows/releases).
+
+**Source Code**: It is recommended to use a tag via `git checkout` (see building instructions below). You may also use `master`, but it is for development and may not be stable.
+
 ## Building
 
 Google only supports [Windows 10 x64 or newer](https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/windows_build_instructions.md#system-requirements). These instructions are tested on Windows 10 Pro x64.
