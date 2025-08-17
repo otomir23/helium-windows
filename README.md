@@ -1,5 +1,8 @@
 # helium-windows
 
+> NOTE: Deprecated in favor of [official packaging](//github.com/imputnet/helium-windows).
+> Repository preserved for the purpose of old version archival.
+
 Windows packaging for [helium-chromium](//github.com/imputnet/helium-chromium).
 
 Unofficial & unaffiliated with imput. Based on [ungoogled-chromium-windows](//github.com/ungoogled-software/ungoogled-chromium-windows).
